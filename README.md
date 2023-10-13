@@ -45,7 +45,7 @@ git clone https://huggingface.co/liuhaotian/llava-v1.5-7b
 ```
 
 ### Usage
-1. Lanuch 3 anaconda prompts. For each one: Activate llava environment, and cd into the llava install folder.
+1. Launch 3 anaconda prompts. For each one: Activate llava environment, and cd into the llava install folder.
 
 2. In 1st anaconda prompt, launch the controller
 ```
