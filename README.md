@@ -29,7 +29,7 @@ pip install pydantic==1.10.9
 
 5. Install bitsandbytes for windows to be able to run quantized model
 ```
-install bitsandbytes-windows: pip install git+https://github.com/Keith-Hon/bitsandbytes-windows.git
+pip install git+https://github.com/Keith-Hon/bitsandbytes-windows.git
 ```
 
 ### Manually Download Model (Optional)
