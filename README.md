@@ -47,12 +47,12 @@ git clone https://huggingface.co/liuhaotian/llava-v1.5-7b
 ### Usage
 1. Lanuch 3 anaconda prompts. For each one: Activate llava environment, and cd into the llava install folder.
 
-2. Launch the controller in 1st anaconda prompt
+2. In 1st anaconda prompt, launch the controller
 ```
 python -m llava.serve.controller --host 0.0.0.0 --port 10000
 ```
 
-3. Launch the model worker using 8-bit quantized model
+3. In the 2nd anaconda prompt, launch the model worker using 8-bit quantized model
 
 Using the model card (this will also download the model first)
 ```
@@ -64,12 +64,12 @@ Or: this is using the manually installed model that should be in the models fold
 python -m llava.serve.model_worker --host "0.0.0.0" --controller-address "http://localhost:10000" --port 40000 --worker-address "http://localhost:40000" --model-path "models/llava-v1.5-7b" --load-8bit
 ```
 
-4. Launch the Gradio Web UI
+4. In the 3rd anaconda prompt, launch the Gradio Web UI
 ```
 python -m llava.serve.gradio_web_server --controller http://localhost:10000 --model-list-mode reload
 ```
 
-5. Open a browser and navigate to ```http://127.0.0.1```
+5. Open a browser and navigate to ```http://127.0.0.1:7860```
 
 
 ## Citation
