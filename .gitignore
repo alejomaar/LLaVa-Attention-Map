@@ -16,7 +16,7 @@ dist
 # Editor
 .idea
 *.swp
-
+models/
 # Other
 .DS_Store
 wandb
