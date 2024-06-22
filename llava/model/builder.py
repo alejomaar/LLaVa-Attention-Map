@@ -23,6 +23,24 @@ from llava.model import *
 from llava.constants import DEFAULT_IMAGE_PATCH_TOKEN, DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN
 
 
+class LlavaMPTForCausalLMWithAttention(LlavaMPTForCausalLM):
+    def __init__(self, config):
+        super().__init__(config)
+        self.attention_maps = []
+
+    def forward(self, *args, **kwargs):
+        self.attention_maps = []  # Reset attention maps before each forward pass
+        outputs = super().forward(*args, **kwargs)
+        return outputs
+
+    def _save_attention_map(self, module, input, output):
+        self.attention_maps.append(output[1])  # Save attention weights
+
+    def register_attention_hooks(self):
+        for layer in self.transformer.layers:
+            layer.self_attn.q_proj.register_forward_hook(self._save_attention_map)
+
+
 def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, load_4bit=False, device_map="auto", device="cuda"):
     kwargs = {"device_map": device_map}
 
@@ -88,7 +106,7 @@ def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, l
                     shutil.copyfile(os.path.join(model_base, 'configuration_mpt.py'), os.path.join(model_path, 'configuration_mpt.py'))
                 tokenizer = AutoTokenizer.from_pretrained(model_base, use_fast=True)
                 cfg_pretrained = AutoConfig.from_pretrained(model_path, trust_remote_code=True)
-                model = LlavaMPTForCausalLM.from_pretrained(model_base, low_cpu_mem_usage=True, config=cfg_pretrained, **kwargs)
+                model = LlavaMPTForCausalLMWithAttention.from_pretrained(model_base, low_cpu_mem_usage=True, config=cfg_pretrained, **kwargs)
             else:
                 print('%%%%%%%%%%%%%%%%%%%%%%%')
                 print('#######################')
@@ -116,7 +134,7 @@ def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, l
                 )
 
                 tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False)
-                model = LlavaLlamaForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, quantization_config=bnb_config, torch_dtype=torch.float16, **kwargs)
+                model = LlavaLlamaForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, quantization_config=bnb_config, **kwargs)
     else:
         # Load language model
         if model_base is not None:

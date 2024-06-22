@@ -86,7 +86,7 @@ class LlavaMPTForCausalLM(MPTForCausalLM, LlavaMetaForCausalLM):
             labels = torch.roll(labels, shifts=-1)
             labels[:, -1] = -100
             loss = F.cross_entropy(logits.view(-1, logits.size(-1)), labels.to(logits.device).view(-1))
-        return CausalLMOutputWithPast(loss=loss, logits=logits, past_key_values=outputs.past_key_values, hidden_states=outputs.hidden_states)
+        return CausalLMOutputWithPast(loss=loss, logits=logits, past_key_values=outputs.past_key_values, hidden_states=outputs.hidden_states, attentions=outputs.attentions)
 
     def prepare_inputs_for_generation(self, input_ids, past_key_values=None, inputs_embeds=None, **kwargs):
         if inputs_embeds is not None:
